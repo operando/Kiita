@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
@@ -53,8 +52,11 @@ class MainActivity : AppCompatActivity() {
                         Log.d("tag", it.toString())
 
                         list.adapter = ArticleListAdapter(this, it)
-                        list.onItemClickListener = AdapterView.OnItemClickListener { adapterView, view, position, l ->
-                            startActivity(ArticleActivity.createIntent(this, adapterView.getItemAtPosition(position) as Article))
+                        list.setOnItemClickListener { adapterView, view, position, l ->
+                            val a = adapterView.getItemAtPosition(position) as Article
+                            ArticleActivity.createIntent(this, a).let {
+                                startActivity(it)
+                            }
                         }
                     }, {
                         Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
