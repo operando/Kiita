@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 
-abstract class BindableAdapterKt<T>(context: Context?, episodeList: List<T>) : ArrayAdapter<T>(context, -1, episodeList) {
+abstract class BindableAdapterKt<T>(context: Context, episodeList: List<T>) : ArrayAdapter<T>(context, -1, episodeList) {
 
     private val inflater by lazy {
         LayoutInflater.from(context)

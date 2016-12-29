@@ -1,14 +1,18 @@
-package com.os.operando.kiita
+package com.os.operando.kiita.activity
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.ListView
 import android.widget.Toast
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
+import com.os.operando.kiita.R
+import com.os.operando.kiita.adapter.ArticleListAdapter
 import com.os.operando.kiita.api.ArticleClient
+import com.os.operando.kiita.findView
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,6 +23,7 @@ class MainActivity : AppCompatActivity() {
 
     val rootView: View by findView(R.id.activity_main)
     val search: Button by findView(R.id.search)
+    val list: ListView by findView(R.id.list)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +49,8 @@ class MainActivity : AppCompatActivity() {
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe({
                         Log.d("tag", it.toString())
+
+                        list.adapter = ArticleListAdapter(this, it)
                     }, {
                         Toast.makeText(this, it.message, Toast.LENGTH_SHORT).show()
                     })
