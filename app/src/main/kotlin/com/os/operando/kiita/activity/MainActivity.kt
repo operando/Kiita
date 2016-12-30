@@ -10,6 +10,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import com.os.operando.kiita.R
 import com.os.operando.kiita.adapter.ArticleListAdapter
+import com.os.operando.kiita.addTo
 import com.os.operando.kiita.api.ArticleClient
 import com.os.operando.kiita.findView
 import com.os.operando.kiita.model.Article
@@ -19,8 +20,11 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import rx.subscriptions.CompositeSubscription
 
 class MainActivity : AppCompatActivity() {
+
+    val subscriptions = CompositeSubscription()
 
     val rootView: View by findView(R.id.activity_main)
     val search: Button by findView(R.id.search)
@@ -61,6 +65,12 @@ class MainActivity : AppCompatActivity() {
                     }, {
                         it.message?.let { toast(it) }
                     })
+                    .addTo(subscriptions)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        subscriptions.unsubscribe()
     }
 }
