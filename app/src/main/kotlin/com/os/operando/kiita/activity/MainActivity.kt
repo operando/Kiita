@@ -6,21 +6,14 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ListView
-import com.google.gson.FieldNamingPolicy
-import com.google.gson.GsonBuilder
-import com.os.operando.kiita.R
+import com.os.operando.kiita.*
 import com.os.operando.kiita.adapter.ArticleListAdapter
-import com.os.operando.kiita.addTo
 import com.os.operando.kiita.api.ArticleClient
-import com.os.operando.kiita.findView
 import com.os.operando.kiita.model.Article
-import com.os.operando.kiita.toast
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subscriptions.CompositeSubscription
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,23 +23,16 @@ class MainActivity : AppCompatActivity() {
     val search: Button by findView(R.id.search)
     val list: ListView by findView(R.id.list)
 
+    @Inject
+    lateinit var client: ArticleClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        (application as KiitaApplication).component.inject(this)
+
         Log.d("tag", "$rootView")
-
-        val gson = GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create()
-
-        val retrofit = Retrofit.Builder()
-                .baseUrl("https://qiita.com")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build()
-
-        val client = retrofit.create(ArticleClient::class.java)
 
         search.setOnClickListener {
             client.search("user:operandoOS")
